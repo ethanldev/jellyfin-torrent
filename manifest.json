@@ -11,15 +11,15 @@
     "targetAbi": "10.11.0.0",
     "timestamp": "2025-01-17T00:00:00Z",
     "sourceUrl": "https://github.com/ethanldev/jellyfin-torrent",
-    "checksum": "b3d73bfceb9ababac9c44e7693748608",
+    "checksum": "1ab0b503aa7140f9fdf1ce5224c8cdf8",
     "versions": [
       {
         "version": "1.0.9.0",
         "changelog": "Patch release",
-        "targetAbi": "10.11.0.0",
+        "targetAbi": "12.2.0.0",
         "sourceUrl": "https://github.com/ethanldev/jellyfin-torrent/releases/download/v1.0.9.0/jellyfin-torrent-v1.0.9.0.zip",
-        "checksum": "b3d73bfceb9ababac9c44e7693748608",
-        "timestamp": "2025-01-17T00:00:00Z"
+        "checksum": "1ab0b503aa7140f9fdf1ce5224c8cdf8",
+        "timestamp": "2026-10-12T00:00:00Z"
       }
     ]
   }

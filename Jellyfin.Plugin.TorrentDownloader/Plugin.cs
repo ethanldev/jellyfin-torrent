@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.TorrentDownloader.Configuration;
 using Jellyfin.Plugin.TorrentDownloader.Services;
@@ -47,7 +48,7 @@ namespace Jellyfin.Plugin.TorrentDownloader
         public override string Name => "Torrent Downloader";
 
         /// <inheritdoc />
-        public override Guid Id => Guid.Parse("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
+        public override Guid Id => Guid.Parse("e0512eb8-37a2-44e6-8ecd-5f47539a259f");
 
         /// <inheritdoc />
         public override string Description => "Download torrents directly into your Jellyfin library";
