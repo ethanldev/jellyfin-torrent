@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.TorrentDownloader", "Jellyfin.Plugin.TorrentDownloader\Jellyfin.Plugin.TorrentDownloader.csproj", "{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.TorrentDownloader", "Jellyfin.Plugin.TorrentDownloader\Jellyfin.Plugin.TorrentDownloader.csproj", "{E0512EB8-37A2-44E6-8ECD-5F47539A259F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.TorrentDownloader.Tests", "Jellyfin.Plugin.TorrentDownloader.Tests\Jellyfin.Plugin.TorrentDownloader.Tests.csproj", "{B2C3D4E5-F6A7-4B5C-9D0E-1F2A3B4C5D6E}"
 EndProject
@@ -13,10 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0512EB8-37A2-44E6-8ECD-5F47539A259F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0512EB8-37A2-44E6-8ECD-5F47539A259F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0512EB8-37A2-44E6-8ECD-5F47539A259F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0512EB8-37A2-44E6-8ECD-5F47539A259F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B2C3D4E5-F6A7-4B5C-9D0E-1F2A3B4C5D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B2C3D4E5-F6A7-4B5C-9D0E-1F2A3B4C5D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2C3D4E5-F6A7-4B5C-9D0E-1F2A3B4C5D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU

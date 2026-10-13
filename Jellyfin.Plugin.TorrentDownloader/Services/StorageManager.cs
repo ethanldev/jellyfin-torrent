@@ -13,7 +13,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
     /// <summary>
     /// Manages storage monitoring and cleanup operations.
     /// </summary>
-    public class StorageManager : IStorageManager, IDisposable
+    public partial class StorageManager : IStorageManager, IDisposable
     {
         private readonly ILibraryManager _libraryManager;
         private readonly ILogger<StorageManager> _logger;
@@ -80,7 +80,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             var config = TorrentDownloaderPlugin.Instance?.Configuration;
             if (config == null)
             {
-                _logger.LogWarning("Cannot start storage manager: plugin configuration not available");
+                Log_StorageManagerWarning();
                 return;
             }
 
@@ -88,6 +88,9 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             _monitoringTimer = new Timer(async _ => await CheckStorageAsync().ConfigureAwait(false), null, TimeSpan.Zero, interval);
             _logger.LogInformation("Storage manager started with {Interval}s check interval", interval.TotalSeconds);
         }
+
+	[LoggerMessage(Level = LogLevel.Warning, Message = "Cannot start storage manager: plugin configuration not available")]
+	private partial void Log_StorageManagerWarning();
 
         /// <inheritdoc />
         public void StopMonitoring()
