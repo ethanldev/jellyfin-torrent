@@ -18,9 +18,24 @@ using Microsoft.Extensions.Logging;
 namespace Jellyfin.Plugin.TorrentDownloader
 {
     /// <summary>
+    /// The Service Registration class for Jellyfin Torrent Downloader
+    /// </summary>
+    public class TorrentDownloaderServiceRegistrator : IPluginServiceRegistrator
+    {
+        /// <inheritdoc />
+        public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
+        {
+            // Register services with appropriate lifetimes
+            serviceCollection.AddSingleton<ITorrentEngine, TorrentEngine>();
+            serviceCollection.AddSingleton<IDownloadManager, DownloadManager>();
+            serviceCollection.AddSingleton<IStorageManager, StorageManager>();
+            serviceCollection.AddTransient<IImportOrchestrator, ImportOrchestrator>();
+        }
+    }
+    /// <summary>
     /// The main plugin class for Jellyfin Torrent Downloader.
     /// </summary>
-    public class TorrentDownloaderPlugin : BasePlugin<PluginConfiguration>, IHasWebPages, IPluginServiceRegistrator
+    public class TorrentDownloaderPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
         private ITorrentEngine? _torrentEngine;
         private IStorageManager? _storageManager;
@@ -71,15 +86,6 @@ namespace Jellyfin.Plugin.TorrentDownloader
             };
         }
 
-        /// <inheritdoc />
-        public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
-        {
-            // Register services with appropriate lifetimes
-            serviceCollection.AddSingleton<ITorrentEngine, TorrentEngine>();
-            serviceCollection.AddSingleton<IDownloadManager, DownloadManager>();
-            serviceCollection.AddSingleton<IStorageManager, StorageManager>();
-            serviceCollection.AddTransient<IImportOrchestrator, ImportOrchestrator>();
-        }
 
         /// <summary>
         /// Initializes plugin services after dependency injection is complete.
