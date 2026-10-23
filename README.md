@@ -2,7 +2,7 @@
 
 A Jellyfin plugin that enables torrent downloading functionality directly within the Jellyfin application. Download content via magnet links or torrent files with automatic import into your Jellyfin media library.
 
-## ⚠️ Legal Disclaimer
+## Legal Disclaimer
 
 **IMPORTANT**: This plugin is intended for downloading legally obtained content only. Users are solely responsible for ensuring that any content downloaded through this plugin complies with applicable copyright laws and regulations in their jurisdiction. The developers of this plugin assume no liability for any misuse or illegal activity conducted with this software.
 
@@ -18,8 +18,8 @@ A Jellyfin plugin that enables torrent downloading functionality directly within
 
 ## Requirements
 
-- Jellyfin Server 10.11.x or later
-- .NET 9.0 Runtime
+- Jellyfin Server 12.2.x or later
+- .NET 10.0 Runtime
 - Sufficient disk space for staging directory
 - Network firewall configured to allow torrent traffic (default port: 6881)
 
@@ -34,7 +34,7 @@ A Jellyfin plugin that enables torrent downloading functionality directly within
 
 ### Method 2: Manual Installation
 
-1. Download the latest release from the [Releases page](https://github.com/austinsonger/jellyfin-torrent/releases)
+1. Download the latest release from the [Releases page](https://github.com/ethanldev/jellyfin-torrent/releases)
 2. Extract the ZIP file
 3. Copy `Jellyfin.Plugin.TorrentDownloader.dll` to your Jellyfin plugins directory:
    - **Linux**: `/var/lib/jellyfin/plugins/TorrentDownloader/`
@@ -305,9 +305,9 @@ Contributions are welcome! Please:
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/jellyfin-torrent/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/jellyfin-torrent/discussions)
-- **Documentation**: [Wiki](https://github.com/yourusername/jellyfin-torrent/wiki)
+- **Issues**: [GitHub Issues](https://github.com/ethanldev/jellyfin-torrent/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ethanldev/jellyfin-torrent/discussions)
+- **Documentation**: [Wiki](https://github.com/ethanldev/jellyfin-torrent/wiki)
 
 ## License
 
@@ -319,6 +319,9 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - MonoTorrent project for the torrent client library
 - Community contributors and testers
 
----
+## Build, Test, and Development Commands
+- `dotnet restore` installs dependencies for the solution.
+- `dotnet build --configuration Release` builds the plugin.
+- `dotnet test` runs the xUnit test project (add tests as you implement them).
+- `dotnet publish Jellyfin.Plugin.TorrentDownloader/Jellyfin.Plugin.TorrentDownloader.csproj --configuration Release --output ./bin/Release/net8.0/publish` produces a deployable plugin bundle.
 
-**Remember**: Only download content you have the legal right to obtain. Respect copyright laws in your jurisdiction.
