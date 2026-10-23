@@ -15,6 +15,7 @@
         "checksum": "454851e6cf9459719437eac23b23e344",
         "timestamp": "2026-10-23T00:00:00Z"
       },
+      {
         "version": "1.0.9.5",
         "changelog": "More Logging",
         "targetAbi": "12.2.0.0",
