@@ -8,6 +8,13 @@
     "category": "General",
     "versions": [
       {
+        "version": "1.0.9.6",
+        "changelog": "Enable Configuration in main menu",
+        "targetAbi": "12.2.0.0",
+        "sourceUrl": "https://github.com/ethanldev/jellyfin-torrent/releases/download/v1.0.9.6/jellyfin-torrent-v1.0.9.6.zip",
+        "checksum": "454851e6cf9459719437eac23b23e344",
+        "timestamp": "2026-10-23T00:00:00Z"
+      },
         "version": "1.0.9.5",
         "changelog": "More Logging",
         "targetAbi": "12.2.0.0",

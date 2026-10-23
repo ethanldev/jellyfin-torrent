@@ -145,12 +145,15 @@ namespace Jellyfin.Plugin.TorrentDownloader
                 new PluginPageInfo
                 {
                     Name = Name,
-                    EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
+                    EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace),
+		    EnableInMainMenu = true
+
                 },
                 new PluginPageInfo
                 {
                     Name = "Torrent Manager",
-                    EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Web.torrentManager.html", GetType().Namespace)
+                    EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Web.torrentManager.html", GetType().Namespace),
+		    EnableInMainMenu = true
                 }
             ];
         }
