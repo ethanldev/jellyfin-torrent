@@ -15,6 +15,7 @@ using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+#pragma warning disable CA1303
 namespace Jellyfin.Plugin.TorrentDownloader
 {
     /// <summary>
@@ -29,6 +30,7 @@ namespace Jellyfin.Plugin.TorrentDownloader
         /// <inheritdoc />
         public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
         {
+	    Console.WriteLine($"Register Torrent Downloader services");
             // Register services with appropriate lifetimes
             serviceCollection.AddSingleton<ITorrentEngine, TorrentEngine>();
             serviceCollection.AddSingleton<IDownloadManager, DownloadManager>();
@@ -43,6 +45,7 @@ namespace Jellyfin.Plugin.TorrentDownloader
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task InitializeServicesAsync(IServiceProvider serviceProvider)
         {
+	    Console.WriteLine($"Initialize Torrent Downloader services");
             try
             {
                 // Resolve services from container
@@ -61,8 +64,9 @@ namespace Jellyfin.Plugin.TorrentDownloader
             }
             catch (Exception ex)
             {
-                // Log initialization failure but don't crash the plugin
+                // Log initialization failure
                 Console.WriteLine($"Failed to initialize Torrent Downloader services: {ex.Message}");
+		throw;
             }
         }
 
@@ -72,6 +76,7 @@ namespace Jellyfin.Plugin.TorrentDownloader
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task ShutdownServicesAsync()
         {
+	    Console.WriteLine($"Shutdown Torrent Downloader services");
             try
             {
                 // Stop storage monitoring
@@ -135,20 +140,21 @@ namespace Jellyfin.Plugin.TorrentDownloader
         /// <inheritdoc />
         public IEnumerable<PluginPageInfo> GetPages()
         {
-            return new[]
-            {
+            return
+            [
                 new PluginPageInfo
                 {
                     Name = Name,
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.configPage.html"
+                    EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
                 },
                 new PluginPageInfo
                 {
                     Name = "Torrent Manager",
-                    EmbeddedResourcePath = GetType().Namespace + ".Web.torrentManager.html"
+                    EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Web.torrentManager.html", GetType().Namespace)
                 }
-            };
+            ];
         }
 
     }
 }
+#pragma warning restore CA1303

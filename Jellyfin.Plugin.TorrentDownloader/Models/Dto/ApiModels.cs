@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Jellyfin.Plugin.TorrentDownloader.Models.Dto
 {
@@ -155,7 +156,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Models.Dto
         /// <summary>
         /// Gets the list of volume statuses.
         /// </summary>
-        public List<VolumeStatusResponse> Volumes { get; } = new List<VolumeStatusResponse>();
+        public IList<VolumeStatusResponse> Volumes { get; } = new Collection<VolumeStatusResponse>();
 
         /// <summary>
         /// Gets or sets a value indicating whether any volume is critical.
@@ -217,7 +218,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Models.Dto
         /// <summary>
         /// Gets the list of errors encountered.
         /// </summary>
-        public List<string> Errors { get; } = new List<string>();
+        public IList<string> Errors { get; } = new Collection<string>();
     }
 
     /// <summary>
@@ -243,6 +244,6 @@ namespace Jellyfin.Plugin.TorrentDownloader.Models.Dto
         /// <summary>
         /// Gets the library paths.
         /// </summary>
-        public List<string> Paths { get; } = new List<string>();
+        public IList<string> Paths { get; } = new Collection<string>();
     }
 }

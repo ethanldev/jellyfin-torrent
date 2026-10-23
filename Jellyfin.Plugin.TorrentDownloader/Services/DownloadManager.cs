@@ -13,7 +13,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
     /// <summary>
     /// Manages torrent downloads with queue processing and state persistence.
     /// </summary>
-    public class DownloadManager : IDownloadManager, IDisposable
+    public partial class DownloadManager : IDownloadManager, IDisposable
     {
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true };
         
@@ -127,7 +127,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                 _downloads.Add(entry);
                 await SaveStateAsync().ConfigureAwait(false);
 
-                _logger.LogInformation("Created download {DownloadId} for user {UserId}", downloadId, userId);
+		Log_CreateDownloadInformation(downloadId, userId);
 
                 // Process queue
                 _ = Task.Run(async () => await ProcessQueueAsync().ConfigureAwait(false));
@@ -139,6 +139,8 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                 _lock.Release();
             }
         }
+	[LoggerMessage(Level = LogLevel.Information, Message = "Created download {DownloadId} for user {UserId}")]
+	partial void Log_CreateDownloadInformation(System.Guid downloadId, System.Guid userId);
 
         /// <inheritdoc />
         public async Task<DownloadEntry?> GetDownloadAsync(Guid downloadId)
@@ -329,6 +331,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to save download state");
+		throw;
             }
         }
 
@@ -363,6 +366,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to load download state");
+		throw;
             }
             finally
             {
@@ -421,6 +425,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                                     {
                                         _logger.LogError(ex, "Error importing download {DownloadId}", download.DownloadId);
                                         await UpdateDownloadStatusAsync(download.DownloadId, DownloadStatus.Completed, $"Import error: {ex.Message}").ConfigureAwait(false);
+					throw;
                                     }
                                 }).ConfigureAwait(false);
                             }
@@ -431,6 +436,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating download progress");
+		throw;
             }
         }
 

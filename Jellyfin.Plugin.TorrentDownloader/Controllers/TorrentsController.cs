@@ -21,7 +21,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Controllers
     [ApiController]
     [Route("api/torrents")]
     [Authorize(Policy = "RequiresElevation")]
-    public class TorrentsController : ControllerBase
+    public partial class TorrentsController : ControllerBase
     {
         private readonly IDownloadManager _downloadManager;
         private readonly IUserManager _userManager;
@@ -110,7 +110,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Controllers
                     return BadRequest("User ID is required");
                 }
 
-                _logger.LogInformation("User {UserId} creating download from source", userId);
+		Log_CreateDownloadInformation(userId);
 
                 var download = await _downloadManager.CreateDownloadAsync(request.TorrentSource, userId).ConfigureAwait(false);
                 
@@ -133,6 +133,8 @@ namespace Jellyfin.Plugin.TorrentDownloader.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create download");
             }
         }
+	[LoggerMessage(Level = LogLevel.Information, Message = "User {UserId} creating download from source")]
+	partial void Log_CreateDownloadInformation(System.Guid userId);
 
         /// <summary>
         /// Gets all downloads with optional status filter.
@@ -156,10 +158,13 @@ namespace Jellyfin.Plugin.TorrentDownloader.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to get downloads");
+		Log_FailedGetDownloadsError(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve downloads");
             }
         }
+
+	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to get downloads")]
+	partial void Log_FailedGetDownloadsError(Exception Ex);
 
         /// <summary>
         /// Gets a download by ID.
@@ -183,10 +188,12 @@ namespace Jellyfin.Plugin.TorrentDownloader.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to get download {DownloadId}", id);
+		Log_GetDownloadError(ex, id);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve download");
             }
         }
+	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to get download {DownloadId}")]
+	partial void Log_GetDownloadError(Exception ex, System.Guid DownloadId);
 
         /// <summary>
         /// Gets detailed download information.
@@ -447,7 +454,8 @@ namespace Jellyfin.Plugin.TorrentDownloader.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to get libraries");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve libraries");
+		throw;
+                //return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve libraries");
             }
         }
 

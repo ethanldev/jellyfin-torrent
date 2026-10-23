@@ -86,19 +86,23 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
 
             var interval = TimeSpan.FromSeconds(config.StorageCheckIntervalActive);
             _monitoringTimer = new Timer(async _ => await CheckStorageAsync().ConfigureAwait(false), null, TimeSpan.Zero, interval);
-            _logger.LogInformation("Storage manager started with {Interval}s check interval", interval.TotalSeconds);
+	    Log_StartInformation(interval.TotalSeconds);
         }
 
 	[LoggerMessage(Level = LogLevel.Warning, Message = "Cannot start storage manager: plugin configuration not available")]
 	private partial void Log_StorageManagerWarning();
+	[LoggerMessage(Level = LogLevel.Information, Message = "Storage manager started with {Interval}s check interval")]
+	private partial void Log_StartInformation(double Interval);
 
         /// <inheritdoc />
         public void StopMonitoring()
         {
             _monitoringTimer?.Dispose();
             _monitoringTimer = null;
-            _logger.LogInformation("Storage manager stopped");
+	    Log_StopMonitoring();
         }
+	[LoggerMessage(Level = LogLevel.Information, Message = "Storage manager stopped")]
+	private partial void Log_StopMonitoring();
 
         /// <inheritdoc />
         public async Task<IList<VolumeStatus>> GetAllVolumesStatusAsync()
@@ -154,11 +158,13 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                             Directory.Delete(dir, true);
                             filesDeleted++;
                             bytesFreed += size;
-                            _logger.LogInformation("Cleaned up orphaned directory {Directory}, freed {Bytes} bytes", dir, size);
+			    Log_CleanupOrphanedFilesInformation(dir, size);
                         }
                         catch (Exception ex)
                         {
                             _logger.LogError(ex, "Failed to delete orphaned directory {Directory}", dir);
+			    Log_CleanupOrphanedFilesError(ex, dir);
+			    throw;
                         }
                     }
                 }
@@ -166,6 +172,10 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
 
             return (filesDeleted, bytesFreed);
         }
+	[LoggerMessage(Level = LogLevel.Information, Message = "Cleaned up orphaned directory {Directory}, freed {Bytes} bytes")]
+        partial void Log_CleanupOrphanedFilesInformation(string Directory, long Bytes);
+	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to delete orphaned directory {Directory}")]
+        partial void Log_CleanupOrphanedFilesError(Exception ex, string Directory);
 
         /// <inheritdoc />
         public async Task<(int filesDeleted, long bytesFreed)> CleanupOldDownloadsAsync(DateTime olderThanDate)
@@ -260,6 +270,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error checking library volumes");
+		    throw;
                 }
 
                 // Determine overall critical state
@@ -340,7 +351,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error checking volume for path {Path}", path);
-                return null;
+		throw;
             }
         }
 

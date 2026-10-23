@@ -15,7 +15,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
     /// <summary>
     /// Implements torrent engine operations using MonoTorrent.
     /// </summary>
-    public class TorrentEngine : ITorrentEngine, IDisposable
+    public partial class TorrentEngine : ITorrentEngine, IDisposable
     {
         private readonly ILogger<TorrentEngine> _logger;
         private readonly Dictionary<Guid, TorrentManager> _torrentManagers;
@@ -81,12 +81,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                 _engineSettings = settingBuilder.ToSettings();
                 _engine = new ClientEngine(_engineSettings);
 
-                _logger.LogInformation(
-                    "Torrent engine initialized successfully - Port: {Port}, DHT: {DHT}, PEX: {PEX}, Encryption: {Encryption}",
-                    config.ListenPort,
-                    config.EnableDHT,
-                    config.EnablePEX,
-                    config.EnableEncryption);
+		Log_InitializeInformation(config.ListenPort, config.EnableDHT, config.EnablePEX, config.EnableEncryption);
                 
                 // Note: In MonoTorrent 3.0.2, DHT and PEX are enabled via TorrentSettings per torrent
                 // Encryption settings are handled automatically by the engine
@@ -95,10 +90,17 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to initialize torrent engine");
+		Log_InitializeError(ex);
                 throw;
             }
         }
+	[LoggerMessage(Level = LogLevel.Information, Message = "Torrent engine initialized successfully - Port: {Port}, DHT: {DHT}, PEX: {PEX}, Encryption: {Encryption}")]
+	private partial void Log_InitializeInformation(int Port, bool DHT, bool PEX, bool Encryption);
+	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to initialize torrent engine")]
+	private partial void Log_InitializeError(Exception Ex);
+	
+        [LoggerMessage(Level = LogLevel.Information, Message = "Starting download for {Name}")]
+	private partial void Log_StartDownloadInformation(string Name);
 
         /// <inheritdoc />
         public async Task StartDownloadAsync(DownloadEntry downloadEntry)
@@ -114,7 +116,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                     throw new InvalidOperationException("Torrent engine not initialized");
                 }
 
-                _logger.LogInformation("Starting download for {Name}", downloadEntry.DisplayName);
+		Log_StartDownloadInformation(downloadEntry.DisplayName);
 
                 var config = TorrentDownloaderPlugin.Instance?.Configuration;
                 if (config == null)
@@ -151,17 +153,20 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                 // Start download
                 await manager.StartAsync().ConfigureAwait(false);
 
-                _logger.LogInformation(
-                    "Download started: {Name}, InfoHash: {Hash}",
+		Log_StartDownloadInformation(
                     downloadEntry.DisplayName,
                     manager.InfoHashes.V1?.ToHex() ?? "unknown");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to start download for {Name}", downloadEntry.DisplayName);
+		Log_StartDownloadError(ex, downloadEntry.DisplayName);
                 throw;
             }
         }
+	[LoggerMessage(Level = LogLevel.Information, Message = "Download started: {Name}, InfoHash: {Hash}")]
+	partial void Log_StartDownloadInformation(string Name, string Hash);
+	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to start download for {Name}")]
+	partial void Log_StartDownloadError(Exception ex, string Name);
 
         /// <inheritdoc />
         public async Task PauseDownloadAsync(Guid downloadId)
@@ -174,15 +179,19 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                 if (manager != null)
                 {
                     await manager.PauseAsync();
-                    _logger.LogInformation("Download paused: {DownloadId}", downloadId);
+		    Log_PauseDownloadInformation(downloadId);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to pause download {DownloadId}", downloadId);
+                Log_PauseDownloadError(ex, downloadId);
                 throw;
             }
         }
+    	[LoggerMessage(Level = LogLevel.Information, Message = "Download paused: {DownloadId}")]
+	partial void Log_PauseDownloadInformation(System.Guid DownloadId);
+    	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to pause download {DownloadId}")]
+	partial void Log_PauseDownloadError(Exception ex, System.Guid DownloadId);
 
         /// <inheritdoc />
         public async Task ResumeDownloadAsync(Guid downloadId)
@@ -195,15 +204,19 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                 if (manager != null)
                 {
                     await manager.StartAsync();
-                    _logger.LogInformation("Download resumed: {DownloadId}", downloadId);
+                    Log_ResumeDownloadInformation(downloadId);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to resume download {DownloadId}", downloadId);
+	    	Log_ResumeDownloadError(ex, downloadId);
                 throw;
             }
         }
+    	[LoggerMessage(Level = LogLevel.Information, Message = "Download resumed: {DownloadId}")]
+	partial void Log_ResumeDownloadInformation(System.Guid DownloadId);
+    	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to resume download {DownloadId}")]
+	partial void Log_ResumeDownloadError(Exception ex, System.Guid DownloadId);
 
         /// <inheritdoc />
         public async Task StopDownloadAsync(Guid downloadId, bool deleteFiles)
@@ -232,15 +245,19 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                         Directory.Delete(manager.SavePath, true);
                     }
 
-                    _logger.LogInformation("Download stopped: {DownloadId}, DeleteFiles: {DeleteFiles}", downloadId, deleteFiles);
+                    Log_StopDownloadInformation(downloadId, deleteFiles);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to stop download {DownloadId}", downloadId);
+		Log_StopDownloadError(ex, downloadId);
                 throw;
             }
         }
+    	[LoggerMessage(Level = LogLevel.Information, Message = "Download stopped: {DownloadId}, DeleteFiles: {DeleteFiles}")]
+	partial void Log_StopDownloadInformation(System.Guid DownloadId, bool DeleteFiles);
+    	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to stop download {DownloadId}")]
+	partial void Log_StopDownloadError(Exception ex, System.Guid DownloadId);
 
         /// <inheritdoc />
         public Task<DownloadEntry?> GetDownloadProgressAsync(Guid downloadId)
@@ -280,9 +297,12 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to get progress for download {DownloadId}", downloadId);
+		Log_GetDownloadProgressError(ex, downloadId);
                 return Task.FromResult<DownloadEntry?>(null);
             }
         }
+	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to get progress for download {DownloadId}")]
+	partial void Log_GetDownloadProgressError(Exception ex, System.Guid DownloadId);
 
         /// <inheritdoc />
         public Task<bool> ValidateTorrentSourceAsync(string torrentSource)
@@ -319,9 +339,12 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to validate torrent source");
+		Log_ValidateTorrentSourceError(ex);
                 return Task.FromResult(false);
             }
         }
+	[LoggerMessage(Level = LogLevel.Error, Message = "Failed to validate torrent source")]
+	partial void Log_ValidateTorrentSourceError(Exception ex);
 
         /// <inheritdoc />
         public async Task ShutdownAsync()
@@ -339,13 +362,17 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                     _torrentManagers.Clear();
                 }
 
-                _logger.LogInformation("Torrent engine shut down successfully");
+                Log_ShutdownInformation();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during torrent engine shutdown");
+                Log_ShutdownError(ex);
             }
         }
+	[LoggerMessage(Level = LogLevel.Information, Message = "Torrent engine shut down successfully")]
+	partial void Log_ShutdownInformation();
+	[LoggerMessage(Level = LogLevel.Error, Message = "Error during torrent engine shutdown")]
+	partial void Log_ShutdownError(Exception Ex);
 
         private TorrentManager? GetTorrentManager(Guid downloadId)
         {

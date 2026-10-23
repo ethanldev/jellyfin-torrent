@@ -146,6 +146,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                         catch (Exception ex)
                         {
                             _logger.LogWarning(ex, "Failed to delete staging directory {Path}", download.StagingPath);
+			    throw;
                         }
                     }
 
@@ -163,6 +164,7 @@ namespace Jellyfin.Plugin.TorrentDownloader.Services
                             maxRetries + 1, download.DownloadId);
                         return false;
                     }
+		    throw;
                 }
             }
 
